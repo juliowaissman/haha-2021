@@ -1,0 +1,60 @@
+convert:
+  cmd: python -m spacy run convert
+  script:
+    - python scripts/convert.py es assets/haha_2021_train.csv corpus/train.spacy corpus/dev.spacy
+  deps:
+    - path: assets/haha_2021_train.csv
+      md5: a578655cf073eaf872fd0a306e3bb4b8
+    - path: scripts/convert.py
+      md5: b96dbc0be877f4b061d4759c537f6727
+  outs:
+    - path: corpus/train.spacy
+      md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+train:
+  cmd: python -m spacy run train
+  script:
+    - python -m spacy train configs/config.cfg --output training/ --paths.train corpus/train.spacy
+      --paths.dev corpus/dev.spacy --nlp.lang es --gpu-id -1
+  deps:
+    - path: configs/config.cfg
+      md5: 07a1105e566ff1532294d4051dcd29d2
+    - path: corpus/train.spacy
+      md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+  outs:
+    - path: training/model-best
+      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+evaluate:
+  cmd: python -m spacy run evaluate
+  script:
+    - python -m spacy evaluate training/model-best corpus/dev.spacy --output training/metrics.json
+  deps:
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+    - path: training/model-best
+      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+  outs:
+    - path: training/metrics.json
+      md5: c5718284fd09f020dcf19e40c3db4c8b
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+package:
+  cmd: python -m spacy run package
+  script:
+    - python -m spacy package training/model-best packages --name tuit_humor --version
+      0.0.1 --force
+  deps:
+    - path: training/model-best
+      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+  outs:
+    - path: packages/es_tuit_humor-0.0.1/dist/es_tuit_humor-0.0.1.tar.gz
+      md5: 5562b5df68284d31382898ec72edcbc2
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
