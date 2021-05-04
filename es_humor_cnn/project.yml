@@ -2,7 +2,7 @@ title: "Detección de humor voluntario con CNN y vectores de palabras"
 description: "Ejemplo de como funciona el aprendizaje con vectores de palabras."
 # Variables can be referenced across the project.yml using ${vars.var_name}
 vars:
-  name: "es_humor"
+  name: "es_humor_cnn"
   version: "0.0.1"
   # Choose your GPU here
   gpu_id: -1
@@ -11,7 +11,7 @@ vars:
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "training", "configs", "metrics", "packages", "scripts", "corpus"]
+directories: ["assets", "training", "configs", "metrics", "packages", "scripts", "corpus", "notebooks"]
 
 # Assets that should be downloaded or available in the directory.
 assets:
@@ -43,7 +43,7 @@ commands:
     deps:
       - "assets/vectors.gz"
     outputs_no_cache:
-      - "assets/es_vectors_web_lg"
+      - "assets/es_fasttext_vectors"
 
   - name: preprocess
     help: "Convert the corpus to spaCy's format"

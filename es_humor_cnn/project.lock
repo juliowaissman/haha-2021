@@ -47,13 +47,13 @@ evaluate:
 package:
   cmd: python -m spacy run package
   script:
-    - python -m spacy package ./training/cnn/model-best packages/ --name es_humor
+    - python -m spacy package ./training/cnn/model-best packages/ --name es_humor_cnn
       --force --version 0.0.1
   deps:
     - path: training/cnn/model-best
       md5: 1f8cceaf95ca0ff8a96cab1264ab6218
   outs:
-    - path: packages/es_humor-0.0.1/dist/es_humor-0.0.1.tar.gz
+    - path: packages/es_humor_cnn-0.0.1/dist/es_humor_cnn-0.0.1.tar.gz
       md5: null
   spacy_version: 3.0.6
   spacy_git_version: df3444421
@@ -65,8 +65,8 @@ init-vectors:
     - path: assets/vectors.gz
       md5: c7f85e2cd2fa99d2ff33fc434b6cb89a
   outs:
-    - path: assets/es_vectors_web_lg
-      md5: null
+    - path: assets/es_fasttext_vectors
+      md5: 09c7f6e632a9c75738d8e3bd74407c2b
   spacy_version: 3.0.6
   spacy_git_version: df3444421
 train-fasttext:

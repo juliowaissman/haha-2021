@@ -21,14 +21,14 @@ train:
       --paths.dev corpus/dev.spacy --nlp.lang es --gpu-id -1
   deps:
     - path: configs/config.cfg
-      md5: 07a1105e566ff1532294d4051dcd29d2
+      md5: e575c562bbe21543c009360e4e1ba0ab
     - path: corpus/train.spacy
       md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
     - path: corpus/dev.spacy
       md5: 4f5cf9caa1973ab667ad14d9641c3856
   outs:
     - path: training/model-best
-      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+      md5: b9d44c7c8c1244ea99b42dd6fa163c84
   spacy_version: 3.0.6
   spacy_git_version: df3444421
 evaluate:
@@ -39,10 +39,10 @@ evaluate:
     - path: corpus/dev.spacy
       md5: 4f5cf9caa1973ab667ad14d9641c3856
     - path: training/model-best
-      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+      md5: b9d44c7c8c1244ea99b42dd6fa163c84
   outs:
     - path: training/metrics.json
-      md5: c5718284fd09f020dcf19e40c3db4c8b
+      md5: a1e43a1accb38d264518f96027d4bb80
   spacy_version: 3.0.6
   spacy_git_version: df3444421
 package:
@@ -52,9 +52,9 @@ package:
       0.0.1 --force
   deps:
     - path: training/model-best
-      md5: 06cfd02c63e411b11bf6bfa4da2f597d
+      md5: b9d44c7c8c1244ea99b42dd6fa163c84
   outs:
     - path: packages/es_tuit_humor-0.0.1/dist/es_tuit_humor-0.0.1.tar.gz
-      md5: 5562b5df68284d31382898ec72edcbc2
+      md5: c39263ee78f7531b304a32838decb29d
   spacy_version: 3.0.6
   spacy_git_version: df3444421

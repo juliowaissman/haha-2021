@@ -5,21 +5,20 @@ vars:
   name: "tuit_humor"
   # Supported languages: all except ja, ko, th, vi, and zh, which would require
   # custom tokenizer settings in config.cfg
-  lang: "es"
+  # lang: "es"
   # Set your GPU ID, -1 is CPU
   gpu_id: -1
   version: "0.0.1"
-  csv-data: "haha_2021_train.csv"
   config: "config.cfg"
 
 # These are the directories that the project needs. The project CLI will make
 # sure that they always exist.
-directories: ["assets", "corpus", "configs", "training", "scripts", "packages"]
+directories: ["assets", "corpus", "configs", "training", "scripts", "packages", "notebook"]
 
 # Assets that should be downloaded or available in the directory. We're shipping
 # them with the project, so they won't have to be downloaded.
 assets:
-  - dest: "assets/${vars.csv-data}"
+  - dest: "assets/haha_2021_train.csv"
     description: "Datos de entrenamiento en formato csv"
 
 # Workflows are sequences of commands (see below) executed in order. You can
@@ -40,9 +39,9 @@ commands:
   - name: "convert"
     help: "Convert the data to spaCy's binary format"
     script:
-      - "python scripts/convert.py ${vars.lang} assets/${vars.csv-data} corpus/train.spacy corpus/dev.spacy"
+      - "python scripts/convert.py es assets/haha_2021_train.csv corpus/train.spacy corpus/dev.spacy"
     deps:
-      - "assets/${vars.csv-data}"
+      - "assets/haha_2021_train.csv"
       - "scripts/convert.py"
     outputs:
       - "corpus/train.spacy"
@@ -51,7 +50,7 @@ commands:
   - name: "train"
     help: "Train the textcat model"
     script:
-      - "python -m spacy train configs/${vars.config} --output training/ --paths.train corpus/train.spacy --paths.dev corpus/dev.spacy --nlp.lang ${vars.lang} --gpu-id ${vars.gpu_id}"
+      - "python -m spacy train configs/${vars.config} --output training/ --paths.train corpus/train.spacy --paths.dev corpus/dev.spacy --nlp.lang es --gpu-id ${vars.gpu_id}"
     deps:
       - "configs/${vars.config}"
       - "corpus/train.spacy"
@@ -76,7 +75,7 @@ commands:
     deps:
       - "training/model-best"
     outputs_no_cache:
-      - "packages/${vars.lang}_${vars.name}-${vars.version}/dist/${vars.lang}_${vars.name}-${vars.version}.tar.gz"
+      - "packages/es_${vars.name}-${vars.version}/dist/es_${vars.name}-${vars.version}.tar.gz"
 
   - name: visualize-model
     help: Visualize the model's output interactively using Streamlit
