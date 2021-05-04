@@ -1,0 +1,90 @@
+preprocess:
+  cmd: python -m spacy run preprocess
+  script:
+    - python scripts/convert.py es assets/haha_2021_train.csv corpus/train.spacy corpus/dev.spacy
+  deps:
+    - path: assets/haha_2021_train.csv
+      md5: a578655cf073eaf872fd0a306e3bb4b8
+  outs:
+    - path: corpus/train.spacy
+      md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+train:
+  cmd: python -m spacy run train
+  script:
+    - python -c "import os; os.makedirs(os.path.join('training', 'cnn'))"
+    - python -m spacy train ./configs/cnn.cfg -o training/cnn --gpu-id -1
+  deps:
+    - path: corpus/train.spacy
+      md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+    - path: configs/cnn.cfg
+      md5: d4d068cb0899a73abb4f551c52278710
+  outs:
+    - path: training/cnn/model-best
+      md5: 0c3fe022d7d2cf136ad5e90163357081
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+evaluate:
+  cmd: python -m spacy run evaluate
+  script:
+    - python -m spacy evaluate ./training/cnn/model-best ./corpus/dev.spacy --output
+      ./metrics/cnn.json
+  deps:
+    - path: training/cnn/model-best
+      md5: 1f8cceaf95ca0ff8a96cab1264ab6218
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+  outs:
+    - path: metrics/cnn.json
+      md5: 3ad1a1f585fb684ad814ae6d6a95dcf5
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+package:
+  cmd: python -m spacy run package
+  script:
+    - python -m spacy package ./training/cnn/model-best packages/ --name es_humor
+      --force --version 0.0.1
+  deps:
+    - path: training/cnn/model-best
+      md5: 1f8cceaf95ca0ff8a96cab1264ab6218
+  outs:
+    - path: packages/es_humor-0.0.1/dist/es_humor-0.0.1.tar.gz
+      md5: null
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+init-vectors:
+  cmd: python -m spacy run init-vectors
+  script:
+    - python -m spacy init vectors es assets/vectors.gz assets/es_fasttext_vectors
+  deps:
+    - path: assets/vectors.gz
+      md5: c7f85e2cd2fa99d2ff33fc434b6cb89a
+  outs:
+    - path: assets/es_vectors_web_lg
+      md5: null
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
+train-fasttext:
+  cmd: python -m spacy run train-fasttext
+  script:
+    - python -c "import os; os.makedirs(os.path.join('training', 'cnn'))"
+    - python -m spacy train ./configs/cnn.cfg -o training/cnn --gpu-id -1  --paths.vectors
+      "assets/es_fasttext_vectors" --components.textcat.model.tok2vec.embed.include_static_vectors
+      true
+  deps:
+    - path: corpus/train.spacy
+      md5: a0a4d4519fbb63d8d9af3344dcf6fcf8
+    - path: corpus/dev.spacy
+      md5: 4f5cf9caa1973ab667ad14d9641c3856
+    - path: configs/cnn.cfg
+      md5: d4d068cb0899a73abb4f551c52278710
+  outs:
+    - path: training/cnn/model-best
+      md5: 1f8cceaf95ca0ff8a96cab1264ab6218
+  spacy_version: 3.0.6
+  spacy_git_version: df3444421
